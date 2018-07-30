@@ -1,0 +1,17 @@
+html
+  head
+    title= "simple sendgrid mock server"
+    link(rel="stylesheet",href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css")
+  body
+    section.hero.is-fullheight
+      .hero-body
+        .container.has-text-centered
+          .column.is-4.is-offset-4
+            h3.title.has-text-black Login
+            .subtitle.has-text-black Simple Sendgrid Mock Server
+            .box
+              form(method="post")
+                .field
+                  .control
+                    input.input(name="apikey" type="text" placeholder="Input APIKey")
+                button.button.is-block.is-info.is-fullwidth Login
