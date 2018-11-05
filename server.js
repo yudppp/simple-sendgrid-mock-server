@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-const apiKey = process.env.SENDGRID_API_KEY
+const apiKey = process.env.SENDGRID_API_KEY || 'secret'
 
 const app = express();
 app.set('view engine', 'pug');
@@ -53,7 +53,12 @@ app.post('/v3/mail/send', function (req, res) {
     // TODO: check auth
     const message = req.body
     message.sent_at = Date.now();
-    store.unshift(message)
+    // sepalate personalizations
+    const messages = message.personalizations.map(personalization => ({
+        ...message,
+        personalizations: [personalization]
+    }))
+    store.unshift(...messages)
     res.status(202).end()
 });
 
