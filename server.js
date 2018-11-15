@@ -37,6 +37,16 @@ app.get('/', function (req, res) {
     });
 });
 
+
+app.get('/json', function (req, res) {
+    const token = req.query.token
+    if (token != apiKey) {
+        res.status(401).send('Unauthorized');
+        return
+    }
+    res.send(store.slice(0, 10));
+});
+
 app.post('/', function (req, res) {
     if (req.body.apikey != apiKey) {
         res.render('login', {
