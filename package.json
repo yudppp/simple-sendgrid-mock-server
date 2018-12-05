@@ -4,7 +4,8 @@
   "description": "Simple Sendgrid Mock Server",
   "main": "server.js",
   "scripts": {
-    "start": "node server"
+    "start": "node server",
+    "lint": "prettier server.js --write"
   },
   "author": "yudppp",
   "license": "MIT",
@@ -14,5 +15,8 @@
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "pug": "^2.0.3"
+  },
+  "devDependencies": {
+    "prettier": "^1.15.3"
   }
 }
