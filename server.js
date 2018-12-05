@@ -61,13 +61,30 @@ app.post('/', function (req, res) {
 
 app.post('/v3/mail/send', function (req, res) {
     // TODO: check auth
-    const message = req.body
+    const {
+        content,
+        ...message
+    } = req.body
     message.sent_at = Date.now();
     // sepalate personalizations
-    const messages = message.personalizations.map(personalization => ({
-        ...message,
-        personalizations: [personalization]
-    }))
+    const messages = message.personalizations.map(({
+        substitutions = {},
+        ...personalization
+    }) => {
+        return {
+            ...message,
+            content: content.map(c => {
+                if (!c.value) return c
+                return { ...c,
+                    // resolve substitutions
+                    value: Object.keys(substitutions).reduce((value, key) => {
+                        return value.split(key).join(substitutions[key])
+                    }, c.value)
+                }
+            }),
+            personalizations: [personalization]
+        }
+    })
     store.unshift(...messages)
     res.status(202).end()
 });
