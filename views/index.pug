@@ -38,7 +38,14 @@ html
         function setData(mail, index) {
           if (before === index) return;
           var message = document.getElementById("js-message");
-          message.innerHTML = mail.content[0].value;
+          var content = mail.content[0]
+          if (content.type === "text/html") {
+            message.innerHTML = content.value;
+          } else if (content.type === "text/plain") {
+            message.innerHTML = "<pre>" + content.value + "</pre>";
+          } else {
+            message.innerHTML = '<span>not support content type</span>';
+          }
           var cards = document.getElementsByClassName("card") 
           cards[index].classList.add("active")
           if (before !== -1) {
