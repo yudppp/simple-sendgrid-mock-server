@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 
 const apiKey = process.env.SENDGRID_API_KEY || "secret";
+const fetchLimit = parseInt(process.env.SENDGRID_FETCH_LIMIT) || 10
 
 const app = express();
 app.set("view engine", "pug");
@@ -36,8 +37,7 @@ app.get("/", function(req, res) {
     return;
   }
   res.render("index", {
-    // only latest 10 mail
-    data: store.slice(0, 10)
+    data: store.slice(0, fetchLimit)
   });
 });
 
@@ -47,7 +47,7 @@ app.get("/json", function(req, res) {
     res.status(401).send("Unauthorized");
     return;
   }
-  res.send(store.slice(0, 10));
+  res.send(store.slice(0, fetchLimit));
 });
 
 app.post("/", function(req, res) {
@@ -85,6 +85,7 @@ app.post("/v3/mail/send", function(req, res) {
     }
   );
   store.unshift(...messages);
+  store.splice(fetchLimit);
   res.status(202).end();
 });
 
