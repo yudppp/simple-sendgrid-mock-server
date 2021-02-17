@@ -37,7 +37,7 @@ app.get("/", function(req, res) {
     return;
   }
   res.render("index", {
-    data: store.slice(0, fetchLimit)
+    data: store
   });
 });
 
@@ -47,7 +47,7 @@ app.get("/json", function(req, res) {
     res.status(401).send("Unauthorized");
     return;
   }
-  res.send(store.slice(0, fetchLimit));
+  res.send(store);
 });
 
 app.post("/", function(req, res) {
