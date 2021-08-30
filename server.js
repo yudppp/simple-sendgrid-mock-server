@@ -31,7 +31,7 @@ app.use(
   })
 );
 
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   if (!req.session.user) {
     res.render("login");
     return;
@@ -41,7 +41,7 @@ app.get("/", function(req, res) {
   });
 });
 
-app.get("/json", function(req, res) {
+app.get("/json", function (req, res) {
   const token = req.query.token;
   if (token != apiKey) {
     res.status(401).send("Unauthorized");
@@ -50,24 +50,24 @@ app.get("/json", function(req, res) {
   res.send(store);
 });
 
-app.post("/", function(req, res) {
+app.post("/", function (req, res) {
   if (req.body.apikey != apiKey) {
     res.render("login", {
       error: "Failed login"
     });
     return;
   }
-  req.session.user = {};
+  req.session.user = { };
   res.redirect(302, "/");
 });
 
-app.post("/v3/mail/send", function(req, res) {
+app.post("/v3/mail/send", function (req, res) {
   // TODO: check auth
   const { content, ...message } = req.body;
   message.sent_at = Date.now();
-  // sepalate personalizations
+  // separate personalizations
   const messages = message.personalizations.map(
-    ({ substitutions = {}, ...personalization }) => {
+    ({ substitutions = { }, ...personalization }) => {
       return {
         ...message,
         content: content.map(c => {
@@ -90,6 +90,6 @@ app.post("/v3/mail/send", function(req, res) {
 });
 
 const port = process.env.PORT || 3030;
-app.listen(port, function() {
+app.listen(port, function () {
   console.log(`start app (port: ${port})`);
 });
