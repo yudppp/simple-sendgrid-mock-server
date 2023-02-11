@@ -19,8 +19,14 @@ html
       .messages {
         padding: 40px 20px;
       }
-      .message {
+      .message-title {
+        margin-bottom: 10px;
+      }
+      .message-content {
         box-sizing: content-box;
+      }
+      .attachments {
+        margin: 10px 0;
       }
   body
     nav.navbar.is-dark.has-shadow
@@ -35,20 +41,29 @@ html
                 .msg-header= `${mail.from.name ? `${mail.from.name}(${mail.from.email})` : mail.from.email} → ${mail.personalizations[0].to[0].name ? `${mail.personalizations[0].to[0].name} (${mail.personalizations[0].to[0].email})` : mail.personalizations[0].to[0].email}`
                 .msg-subject= mail.subject
                 .msg-sent-at= new Date(mail.sent_at).toISOString().slice(0, -8)
-      #js-message.column.is-7.messages.hero.is-fullheight.message
+      .column.is-7.messages.is-fullheight
+        #js-message-title.subtitle.message-title 
+        #js-message-attachments.attachments
+        #js-message-content.message-content
       script.
         var before = -1
         function setData(mail, index) {
           if (before === index) return;
-          var message = document.getElementById("js-message");
+          var title = document.getElementById("js-message-title");
+          var attachments =  document.getElementById("js-message-attachments");
+          var messageContent = document.getElementById("js-message-content");
+          title.innerHTML = `<span>${mail.subject}</span>`
           var content = mail.content[0]
           if (content.type === "text/html") {
-            message.innerHTML = content.value;
+            messageContent.innerHTML = content.value;
           } else if (content.type === "text/plain") {
-            message.innerHTML = "<pre>" + content.value + "</pre>";
+            messageContent.innerHTML = "<pre>" + content.value + "</pre>";
           } else {
-            message.innerHTML = '<span>not support content type</span>';
+            messageContent.innerHTML = '<span>not support content type</span>';
           }
+          attachments.innerHTML = mail.attachments.map(attachment => (
+            `<a download="${attachment.filename}" href="data:${attachment.type};base64,${attachment.content}" class="button is-small">${attachment.filename}</a>`
+          )).join('')
           var cards = document.getElementsByClassName("card") 
           cards[index].classList.add("active")
           if (before !== -1) {

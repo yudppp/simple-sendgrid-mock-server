@@ -80,7 +80,8 @@ app.post("/v3/mail/send", function (req, res) {
             }, c.value)
           };
         }),
-        personalizations: [personalization]
+        personalizations: [personalization],
+        attachments: message?.attachments ??[]
       };
     }
   );
