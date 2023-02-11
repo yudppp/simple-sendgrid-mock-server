@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server",
     "lint": "prettier server.js --write",
-    "sample-request": "curl -X POST -H 'Authorization: Bearer secret' -H \"Content-Type: application/json\" -d '{\"personalizations\": [{\"to\": [{\"email\": \"example@example.com\"}]}],\"from\": {\"email\": \"example@example.com\"},\"subject\": \"Hello, World!\",\"content\": [{\"type\": \"text/plain\", \"value\": \"Heya!\"}]}' http://localhost:3030/v3/mail/send"
+    "sample-request": "curl -X POST -H 'Authorization: Bearer secret' -H \"Content-Type: application/json\" -d '{\"personalizations\": [{\"to\": [{\"email\": \"example@example.com\"}]}],\"from\": {\"email\": \"example@example.com\"},\"subject\": \"Hello, World!\",\"content\": [{\"type\": \"text/plain\", \"value\": \"Heya!\"}]}' http://localhost:3030/v3/mail/send",
+    "sample-request-with-file": "curl -X POST -H 'Authorization: Bearer secret' -H \"Content-Type: application/json\" -d '{\"personalizations\": [{\"to\": [{\"email\": \"example@example.com\"}]}],\"from\": {\"email\": \"example@example.com\"},\"subject\": \"Hello, World!\",\"content\": [{\"type\": \"text/plain\", \"value\": \"Request with file!\"}], \"attachments\": [{\"content\": \"aGVsbG8K\", \"type\": \"text/plain\", \"filename\": \"attachment.txt\"}]}' http://localhost:3030/v3/mail/send"
   },
   "author": "yudppp",
   "license": "MIT",

@@ -1,4 +1,4 @@
-FROM node:8.9.4-alpine
+FROM node:19.6.0-alpine
 
 EXPOSE 3030
 
