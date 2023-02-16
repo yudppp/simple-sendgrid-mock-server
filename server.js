@@ -11,12 +11,18 @@ app.set("view engine", "pug");
 
 const store = [];
 
+const maxRequestBodySize = process.env.MAX_BODY_SIZE || "10mb";
 app.use(
   bodyParser.urlencoded({
-    extended: false
+    extended: false,
+    limit: maxRequestBodySize
   })
 );
-app.use(bodyParser.json());
+app.use(
+  bodyParser.json({
+    limit: maxRequestBodySize
+  })
+);
 
 app.use(
   session({
