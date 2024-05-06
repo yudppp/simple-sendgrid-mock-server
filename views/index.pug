@@ -39,10 +39,10 @@ html
             .card(onclick=`setData(${JSON.stringify(mail)}, ${index})`)
               .card-content
                 .msg-header= `${mail.from.name ? `${mail.from.name}(${mail.from.email})` : mail.from.email} → ${mail.personalizations[0].to[0].name ? `${mail.personalizations[0].to[0].name} (${mail.personalizations[0].to[0].email})` : mail.personalizations[0].to[0].email}`
-                .msg-subject= mail.subject
+                .msg-subject= mail.personalizations[0].subject || mail.subject
                 .msg-sent-at= new Date(mail.sent_at).toISOString().slice(0, -8)
       .column.is-7.messages.is-fullheight
-        #js-message-title.subtitle.message-title 
+        #js-message-title.subtitle.message-title
         #js-message-attachments.attachments
         #js-message-content.message-content
       script.
@@ -52,7 +52,7 @@ html
           var title = document.getElementById("js-message-title");
           var attachments =  document.getElementById("js-message-attachments");
           var messageContent = document.getElementById("js-message-content");
-          title.innerHTML = `<span>${mail.subject}</span>`
+          title.innerHTML = `<span>${mail.personalizations[0].subject || mail.subject}</span>`
           var content = mail.content[0]
           if (content.type === "text/html") {
             messageContent.innerHTML = content.value;
@@ -64,7 +64,7 @@ html
           attachments.innerHTML = mail.attachments.map(attachment => (
             `<a download="${attachment.filename}" href="data:${attachment.type};base64,${attachment.content}" class="button is-small">${attachment.filename}</a>`
           )).join('')
-          var cards = document.getElementsByClassName("card") 
+          var cards = document.getElementsByClassName("card")
           cards[index].classList.add("active")
           if (before !== -1) {
             cards[before].classList.remove("active")
