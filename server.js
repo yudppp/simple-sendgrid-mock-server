@@ -76,6 +76,7 @@ app.post("/v3/mail/send", function (req, res) {
     ({ substitutions = { }, ...personalization }) => {
       return {
         ...message,
+        subject: personalization.subject || message.subject,
         content: content.map(c => {
           if (!c.value) return c;
           return {
