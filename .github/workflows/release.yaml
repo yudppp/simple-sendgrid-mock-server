@@ -30,6 +30,11 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
+      
+    - name: Configure Git
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
 
     - name: Bump version
       id: bump-version
@@ -39,8 +44,6 @@ jobs:
 
     - name: Push changes
       run: |
-        git config --global user.email "action@github.com"
-        git config --global user.name "GitHub Action"
         git push origin HEAD:master --follow-tags
 
     - name: Create Git tag
