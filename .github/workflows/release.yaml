@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Bump version'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+        - major
+        - minor
+        - patch
+
+jobs:
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 'lts/*'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Bump version
+      id: bump-version
+      run: |
+        npm version ${{ github.event.inputs.version_type }} -m "Bump version to %s"
+        echo "::set-output name=version::$(node -p "require('./package.json').version")"
+
+    - name: Push changes
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git push origin HEAD:master --follow-tags
+
+    - name: Create Git tag
+      run: |
+        git tag ${{ steps.bump-version.outputs.version }}
+        git push origin ${{ steps.bump-version.outputs.version }}
+
+    - name: Build and push Docker image
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      run: |
+        IMAGE_TAG=${{ steps.bump-version.outputs.version }}
+        docker build -t yudppp/simple-sendgrid-mock-server:latest -t yudppp/simple-sendgrid-mock-server:$IMAGE_TAG .
+        echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+        docker push yudppp/simple-sendgrid-mock-server:latest
+        docker push yudppp/simple-sendgrid-mock-server:$IMAGE_TAG
