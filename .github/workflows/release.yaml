@@ -40,16 +40,11 @@ jobs:
       id: bump-version
       run: |
         npm version ${{ github.event.inputs.version_type }}
-        echo "::set-output name=version::$(node -p "require('./package.json').version")"
+        echo "::set-output name=version::v$(node -p "require('./package.json').version")"
 
     - name: Push changes
       run: |
         git push origin HEAD:master --follow-tags
-
-    - name: Create Git tag
-      run: |
-        git tag ${{ steps.bump-version.outputs.version }}
-        git push origin ${{ steps.bump-version.outputs.version }}
 
     - name: Build and push Docker image
       env:
