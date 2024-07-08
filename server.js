@@ -71,20 +71,22 @@ app.post("/v3/mail/send", function (req, res) {
   // TODO: check auth
   const { content, ...message } = req.body;
   message.sent_at = Date.now();
-  // separate personalizations
+  const personalize = (message, substitutions) => {
+    return Object.keys(substitutions).reduce((value, key) => {
+      return value.split(key).join(substitutions[key]);
+    }, message)
+  }
   const messages = message.personalizations.map(
     ({ substitutions = { }, ...personalization }) => {
       return {
         ...message,
-        subject: personalization.subject || message.subject,
+        subject: personalize(personalization.subject || message.subject, substitutions),
         content: content.map(c => {
           if (!c.value) return c;
           return {
             ...c,
             // resolve substitutions
-            value: Object.keys(substitutions).reduce((value, key) => {
-              return value.split(key).join(substitutions[key]);
-            }, c.value)
+            value: personalize(c.value, substitutions)
           };
         }),
         personalizations: [personalization],
